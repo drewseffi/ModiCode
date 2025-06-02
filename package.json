@@ -1,0 +1,11 @@
+{
+  "name": "modicode",
+  "version": "1.0.0",
+  "description": "A MODIfiable CODE editor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Drew Sutherland",
+  "license": "ISC"
+}
