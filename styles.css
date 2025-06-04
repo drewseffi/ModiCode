@@ -12,6 +12,7 @@ body {
   align-items: center;
   app-region: drag;
   font-family: Monaco, Lucida Console, monospace;
+  grid-column: 1 / span 2;
 }
 
 .editorContainer{
@@ -117,10 +118,17 @@ input[type=text], select {
 
 .parent {
   width:100%;
-  height:100vh;
+  height:100%;
 }
 
 .gridCon {
+  width:100%;
+  height:100vh;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-rows: minmax(30px, auto) minmax(0,100%);
+  grid-template-columns: 1fr 0.1fr;
+}
+
+.ace_scrollbar, .ace_scrollbar-inner {
+  display: none !important;
 }
