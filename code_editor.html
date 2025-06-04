@@ -5,10 +5,11 @@
     <link href="./styles.css" rel="stylesheet">
 
     <script type="text/javascript" src="./ace.js"></script>
-    <script type="text/javascript" src="./amode-javascript.js"></script>
+    <script type="text/javascript" src="./amode-c_cpp.js"></script>
     <script type="text/javascript" src="./theme-twilight.js"></script>
+    <script>const fs = require('fs');</script>
 
-    <title>Custom Titlebar App</title>
+    <title>ModiCode</title>
 
     <style type="text/css" media="screen">
       #editor {
@@ -25,27 +26,119 @@
   <body>
     <div class="titlebar">ModiCode</div>
 
-  <!-- Hidden Popup Menu -->
+  <!-- 
+    MARK: Color menu 
+  -->
   <div class="color-popup" id="colorPopup">
-    <label for="bgColorPicker">Background:</label>
-    <input type="color" id="bgColorPicker" value="#141414">
-  </div>
+    <h1 style="font-family: Monaco, Lucida Console, monospace;">Color Modifier</h1>
 
-    <div class="editorContainer">
-      <div id="editor">function foo(items) {
-        var x = "All this is syntax highlighted";
-        return x;
-      }</div>
+
+    <div class="pickerDiv">
+      <label for="headerColorPicker">Title Bar:</label>
+      <input type="color" id="headColorPicker" value="#2f3241">
     </div>
 
+    <div class="pickerDiv">
+      <label for="headerColorPicker">Title Bar Text:</label>
+      <input type="color" id="headTextColorPicker" value="#ffffff">
+    </div>
+
+    <div class="pickerDiv">
+      <label for="bgColorPicker">Background:</label>
+      <input type="color" id="bgColorPicker" value="#141414">
+    </div>
+
+    <div class="pickerDiv">
+      <label for="gutterColorPicker">Gutter:</label>
+      <input type="color" id="gutterColorPicker" value="#232323">
+    </div>
+
+    <label for="themes">Load pre-existing theme:</label>
+      <select id="themes" name="themes"></select>
+
+    <div class="btnSing">
+      <input type="button" value="Open" onclick="loadTheme()">
+    </div>
+
+  </div>
+
+  <!-- 
+    MARK: Save menu 
+  -->
+  <div class="save-popup" id="savePopup">
+
+    <h1 style="font-family: Monaco, Lucida Console, monospace;">Save File</h1>
+
+    <form>
+      <label for="fname">File Name:</label>
+      <input type="text" id="fname" name="fname" spellcheck="false"><br><br>
+      <label for="lname">File Location:</label>
+      <input type="text" id="lname" name="lname" spellcheck="false" value="./file-default/"><br><br>
+
+      <div class="btnCont">
+        <input type="button" value="Save" onclick="save()">
+        <input type="button" value="Cancel" onclick="closeSave()">
+      </div>
+    </form>
+  </div>
+
+  <!-- 
+    MARK: Open menu 
+  -->
+  <div class="open-popup" id="openPopup">
+
+    <h1 style="font-family: Monaco, Lucida Console, monospace;">Open File</h1>
+
+    <form>
+      <label for="fnameO">File Name:</label>
+      <input type="text" id="fnameO" name="fnameO" spellcheck="false"><br><br>
+      <label for="lnameO">File Location:</label>
+      <input type="text" id="lnameO" name="lnameO" spellcheck="false" value="./file-default/"><br><br>
+
+      <div class="btnCont">
+        <input type="button" value="Open" onclick="openDoc()">
+        <input type="button" value="Cancel" onclick="closeOpen()">
+      </div>
+    </form>
+  </div>
+
+  </div>
+
+  <!-- 
+    MARK: Editor
+  -->
+  <div class="editorContainer">
+    <div id="editor">Get coding...</div>
+  </div>
+
+  <div style="height: 10px; background-color: blue;">line count:</div>
+
     <script>
+      //Opens theme files
+      var files = fs.readdirSync('./themes/');
+
+      for (const e of files)
+      {
+        console.log(e);
+        let test = "<option>" + e + "</option>"
+        document.getElementById("themes").innerHTML += test;
+      }
+    </script>
+
+    <script>
+      //Gets ace editor
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/twilight");
-      editor.session.setMode("ace/mode/javascript");
+      //editor.session.setMode("ace/mode/c_cpp");
+      //Sets up the basics
       editor.setShowPrintMargin(false);
       editor.setFontSize(12);
+      document.getElementById("editor").focus();
 
-      function applyEditorBackground(color) {
+
+      //Changes colors for editor
+      function applyEditorBackground(color, gutterColor) 
+      {
         let style = document.getElementById("dynamic-ace-style");
         if (!style) {
           style = document.createElement("style");
@@ -57,21 +150,60 @@
           #editor.ace_editor {
             background-color: ${color} !important;
           }
+          .ace_gutter {
+            background-color: ${gutterColor} !important;
+          }
         `;
       }
 
+      //Changes color for menu bar
+      function applyHeadColor(head, headText)
+      {
+        let styleHead = document.getElementById("dynamic-head-style");
+        if (!styleHead) {
+          styleHead = document.createElement("style");
+          styleHead.id = "dynamic-head-style";
+          document.head.appendChild(styleHead);
+        }
+
+        styleHead.textContent = `
+          .titlebar {
+            background-color: ${head} !important;
+            color: ${headText} !important;
+          }
+        `}
+
+
+      //Listens for the UI to have received an input
       const bgColorPicker = document.getElementById("bgColorPicker");
+      const gutterColorPicker = document.getElementById("gutterColorPicker");
+      const headColorPicker = document.getElementById("headColorPicker");
+      const headTextColorPicker = document.getElementById("headTextColorPicker");
+
       bgColorPicker.addEventListener("input", (e) => {
-        applyEditorBackground(e.target.value);
+        applyEditorBackground(e.target.value, gutterColorPicker.value);
       });
 
-      // Apply initial value
-      applyEditorBackground(bgColorPicker.value);
+      gutterColorPicker.addEventListener("input", (e) => {
+        applyEditorBackground(bgColorPicker.value, e.target.value);
+      });
+
+      headColorPicker.addEventListener("input", (e) => {
+        applyHeadColor(e.target.value, headTextColorPicker.value);
+      });
+      
+      headTextColorPicker.addEventListener("input", (e) => {
+        applyHeadColor(headColorPicker.value, e.target.value);
+      });
+      //Apply initial value
+      applyEditorBackground(bgColorPicker.value, gutterColorPicker.value);
     </script>
 
     <script>
+      //Scroll wheel to zoom
       let ctrlPressed = false;
 
+      //Listens for ctrl key
       document.addEventListener('keydown', (e) => {
         if (e.ctrlKey) ctrlPressed = true;
       });
@@ -79,32 +211,168 @@
         if (!e.ctrlKey) ctrlPressed = false;
       });
 
+      //Listens for mouse wheel
       editor.container.addEventListener('wheel', (e) => {
         if (ctrlPressed) {
           e.preventDefault();
+          //Checks direction
           const delta = e.deltaY < 0 ? 1 : -1;
-          editor.setFontSize(editor.getFontSize() + delta);
+          let size = editor.getFontSize() + delta
+          if (size >= 8)
+          {
+            editor.setFontSize(editor.getFontSize() + delta);
+          }
         }
       }, { passive: false });
     </script>
 
     <script>
-const popup = document.getElementById("colorPopup");
+      //Add command to open a theme
+      editor.commands.addCommand({
+        name: "themes",
+        bindKey: { win: "Ctrl-T", mac: "Command-T" },
+        exec: function(editor) {
+          loadTheme();
+        }
+      })
 
-// Add command to Ace Editor to toggle popup on Ctrl+P
-editor.commands.addCommand({
-  name: "toggleColorPicker",
-  bindKey: { win: "Ctrl-P", mac: "Command-P" },
-  exec: function(editor) {
-    if (popup.style.display === "block") {
-      popup.style.display = "none";
-    } else {
-      popup.style.display = "block";
-    }
-  },
-  readOnly: true, // so it works even if editor is read-only
-});
+      function loadTheme()
+      {
+        let themeTxt = "";
+        let dir = "./themes/"
+        const filePick = document.getElementById("themes");
+        let file = filePick.options[filePick.selectedIndex].text;
+
+        let newDir = dir.concat(file);
+
+        fetch(newDir)
+          .then(response => response.text())
+          .then(text => {
+            const colors = text.split("\n").map(s => s.trim());
+            applyHeadColor(colors[0], colors[1]);
+            applyEditorBackground(colors[2], colors[3]);
+
+            const bgColorPicker = document.getElementById("bgColorPicker");
+            const gutterColorPicker = document.getElementById("gutterColorPicker");
+            const headColorPicker = document.getElementById("headColorPicker");
+            const headTextColorPicker = document.getElementById("headTextColorPicker");
+
+            headColorPicker.value = colors[0];
+            headTextColorPicker.value = colors[1];
+            bgColorPicker.value = colors[2];
+            gutterColorPicker.value = colors[3];
+          })
+          .catch(error => {
+            console.error("Failed to load file:", error);
+          });
+      }
+    </script>
+
+    <script>
+    const popup = document.getElementById("colorPopup");
+
+    //Add command to Ace Editor to toggle popup on Ctrl+P
+    editor.commands.addCommand({
+      name: "toggleColorPicker",
+      bindKey: { win: "Ctrl-P", mac: "Command-P" },
+      exec: function(editor) {
+        if (popup.style.display === "grid") {
+          popup.style.display = "none";
+        } else {
+          popup.style.display = "grid";
+        }
+      },
+      readOnly: true,
+    });
 
     </script>
+
+    <script>
+      const savePop = document.getElementById("savePopup");
+
+      //Adds command to save work
+      editor.commands.addCommand({
+        name: "save",
+        bindKey: { win: "Ctrl-S", mac: "Command-S" },
+        exec: function(editor) {
+        if (savePop.style.display === "grid") {
+          savePop.style.display = "none";
+        } else {
+          savePop.style.display = "grid";
+        }
+        },
+        readOnly: false,
+      });
+    </script>
+
+    <script>
+      const openPop = document.getElementById("openPopup");
+
+      //Adds command to open file
+
+      editor.commands.addCommand({
+        name: "open",
+        bindKey: { win: "Ctrl-O", mac: "Command-O" },
+        exec: function(editor) {
+        if (openPop.style.display === "grid") {
+          openPop.style.display = "none";
+        } else {
+          openPop.style.display = "grid";
+        }
+        },
+        readOnly: false,
+      });
+    </script>
+
+    <script>
+      //Opens files
+      function openDoc() {
+        
+        const nameO = document.getElementById("fnameO").value;
+        const locO = document.getElementById("lnameO").value;
+        
+        let newDirO = locO.concat(nameO);
+        
+        fetch(newDirO)
+          .then(response => response.text())
+          .then(text => {
+            editor.session.setValue(text);
+          });
+          
+
+        openPop.style.display = "none";
+      }
+
+      function closeOpen()
+      {
+        const openPop = document.getElementById("openPopup");
+        openPop.style.display = "none";
+      }
+    </script>
+    
+    <script>
+      //Saves files
+      function save( ) {
+        const name = document.getElementById("fname").value;
+        const loc = document.getElementById("lname").value;
+
+        let newDir = loc.concat(name);
+        //newDir = newDir.concat(".txt");
+
+        let eText = editor.getValue();
+        try { fs.writeFileSync(newDir, eText, 'utf-8'); }
+        catch(e) { alert('Failed to save the file !'); }
+        const savePop = document.getElementById("savePopup");
+        savePop.style.display = "none";
+      }
+
+      function closeSave()
+      {
+        const savePop = document.getElementById("savePopup");
+        savePop.style.display = "none";
+      }
+
+    </script>
+
   </body>
 </html>

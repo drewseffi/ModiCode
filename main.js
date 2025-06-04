@@ -8,12 +8,14 @@ const createWindow = () => {
     titleBarStyle: 'hidden',
     ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
     titleBarOverlay: {
-      color: '#2f3241',
+      color: 'rgba(255, 255, 255, 0)',
       symbolColor: '#74b1be',
       height: 30
   },
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 

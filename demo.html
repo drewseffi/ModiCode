@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="./styles.css" rel="stylesheet">
 <title>ACE in Action</title>
 <style type="text/css" media="screen">
-    #editor { 
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+    #editor {
+        width: 100%;
+        height: 100%;
+    }
+
+    #editor2 {
+        width: 100%;
+        height: 100%;
     }
 </style>
 </head>
 <body>
 
-<div id="editor">function foo(items) {
-    var x = "All this is syntax highlighted";
-    return x;
-}</div>
+<div class="gridCon">
+
+    <div class="parent">
+        <div id="editor">Hello world!</div>
+    </div>
+
+    <div class="parent">
+        <div id="editor2">Hello world!</div>
+    </div>
+
+</div>
     
 <script src="./ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/javascript");
+    editor.resize();
+    editor.renderer.updateFull();
+</script>
+
+<script>
+    var editor2 = ace.edit("editor2");
+    editor2.setTheme("ace/theme/twilight");
+    editor2.session.setMode("ace/mode/javascript");
+    editor.resize();
+    editor.renderer.updateFull();
 </script>
 </body>
 </html>
