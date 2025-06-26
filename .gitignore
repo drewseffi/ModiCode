@@ -1,0 +1,58 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Electron build output
+dist/
+out/
+release/
+
+# Optional npm cache
+.npm/
+
+# Optional Yarn cache
+.yarn-cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Electron Builder specific
+build/
+
+# Optional: compiled binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Optional: lock files
+package-lock.json
+yarn.lock
+
+# Other temp files
+*.tmp
+*.temp
+*.swp
