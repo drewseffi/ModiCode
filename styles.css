@@ -5,6 +5,7 @@ body {
 .titlebar {
     width:100%;
   height: 30px;
+  grid-column: 1 / span 2;
   background: #2f3241;
   color: #ffffff;
   display: flex;
@@ -12,7 +13,6 @@ body {
   align-items: center;
   app-region: drag;
   font-family: Monaco, Lucida Console, monospace;
-  grid-column: 1 / span 2;
 }
 
 .editorContainer{
@@ -131,4 +131,49 @@ input[type=text], select {
 
 .ace_scrollbar, .ace_scrollbar-inner {
   display: none !important;
+}
+
+.floating-window {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  width: 300px;
+  height: 200px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #555;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  resize: both;
+  overflow: auto;
+  z-index: 1000;
+  border-radius: 5px;
+}
+
+.window-header {
+  height: 30px;
+  background-color: #3a3a3a;
+  cursor: move;
+  user-select: none;
+  font-family: monospace;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+#notesContent {
+  width: 100%;
+  height: calc(100% - 35px);
+  background-color: #1e1e1e;
+  border: none;
+  color: white;
+  resize: none;
+  font-family: monospace;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+#notesContent:focus {
+  outline: none;
+  box-shadow: none;
 }

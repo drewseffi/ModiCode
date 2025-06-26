@@ -1,0 +1,48 @@
+1 level
+
+Block enemies
+
+Based on what we have
+{
+    enemies spawning
+    follow logic
+    death
+    25% or lower health - Glory kill
+    {
+        bool gloryState = false;
+        
+        if (health < (health / 100) * 25)
+        {
+            gloryState = true;
+        }
+        
+        if (gloryState)
+        {
+            if (isClicked)
+            {
+                portal.spawn(location of enemy);
+            }
+        }
+    }
+}
+
+Glory kill event
+{
+    {
+        change color
+        press e
+    }
+    portal //Cube
+    portal takes you somewhere
+    {
+        player.transform = location;
+    }
+}
+
+Unity Terrain Tool
+
+2 seperate level types:
+{
+    Arena - Fight waves of enemies and a boss
+    Free roam - NPCs and secrets with story stuff
+}
